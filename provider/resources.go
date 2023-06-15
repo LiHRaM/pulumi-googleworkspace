@@ -12,27 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package xyz
+package googleworkspace
 
 import (
 	"fmt"
 	"path/filepath"
 
+	googleworkspace "github.com/hashicorp/terraform-provider-googleworkspace/shim"
+	"github.com/lihram/pulumi-googleworkspace/provider/pkg/version"
 	"github.com/pulumi/pulumi-terraform-bridge/v3/pkg/tfbridge"
 	shim "github.com/pulumi/pulumi-terraform-bridge/v3/pkg/tfshim"
 	shimv2 "github.com/pulumi/pulumi-terraform-bridge/v3/pkg/tfshim/sdk-v2"
-	"github.com/pulumi/pulumi-xyz/provider/pkg/version"
 	"github.com/pulumi/pulumi/sdk/v3/go/common/resource"
-	"github.com/terraform-providers/terraform-provider-xyz/xyz"
 )
 
 // all of the token components used below.
 const (
 	// This variable controls the default name of the package in the package
 	// registries for nodejs and python:
-	mainPkg = "xyz"
+	mainPkg = "googleworkspace"
 	// modules:
-	mainMod = "index" // the xyz module
+	mainMod = "index" // the googleworkspace module
 )
 
 // preConfigureCallback is called before the providerConfigure function of the underlying provider.
@@ -46,12 +46,12 @@ func preConfigureCallback(vars resource.PropertyMap, c shim.ResourceConfig) erro
 // Provider returns additional overlaid schema and metadata associated with the provider..
 func Provider() tfbridge.ProviderInfo {
 	// Instantiate the Terraform provider
-	p := shimv2.NewProvider(xyz.Provider())
+	p := shimv2.NewProvider(googleworkspace.Provider())
 
 	// Create a Pulumi provider mapping
 	prov := tfbridge.ProviderInfo{
 		P:    p,
-		Name: "xyz",
+		Name: "googleworkspace",
 		// DisplayName is a way to be able to change the casing of the provider
 		// name when being displayed on the Pulumi registry
 		DisplayName: "",
@@ -70,17 +70,17 @@ func Provider() tfbridge.ProviderInfo {
 		// for use in Pulumi programs
 		// e.g https://github.com/org/pulumi-provider-name/releases/
 		PluginDownloadURL: "",
-		Description:       "A Pulumi package for creating and managing xyz cloud resources.",
+		Description:       "A Pulumi package for creating and managing googleworkspace cloud resources.",
 		// category/cloud tag helps with categorizing the package in the Pulumi Registry.
 		// For all available categories, see `Keywords` in
 		// https://www.pulumi.com/docs/guides/pulumi-packages/schema/#package.
-		Keywords:   []string{"pulumi", "xyz", "category/cloud"},
+		Keywords:   []string{"pulumi", "googleworkspace", "category/cloud"},
 		License:    "Apache-2.0",
 		Homepage:   "https://www.pulumi.com",
-		Repository: "https://github.com/pulumi/pulumi-xyz",
+		Repository: "https://github.com/lihram/pulumi-googleworkspace",
 		// The GitHub Org for the provider - defaults to `terraform-providers`. Note that this
 		// should match the TF provider module's require directive, not any replace directives.
-		GitHubOrg: "",
+		GitHubOrg: "hashicorp",
 		Config:    map[string]*tfbridge.SchemaInfo{
 			// Add any required configuration here, or remove the example below if
 			// no additional points are required.
@@ -92,7 +92,7 @@ func Provider() tfbridge.ProviderInfo {
 			// },
 		},
 		PreConfigureCallback: preConfigureCallback,
-		Resources:            map[string]*tfbridge.ResourceInfo{
+		Resources: map[string]*tfbridge.ResourceInfo{
 			// Map each resource in the Terraform provider to a Pulumi type. Two examples
 			// are below - the single line form is the common case. The multi-line form is
 			// needed only if you wish to override types or other default options.
@@ -105,11 +105,41 @@ func Provider() tfbridge.ProviderInfo {
 			// 		"tags": {Type: tfbridge.MakeType(mainPkg, "Tags")},
 			// 	},
 			// },
+			"googleworkspace_chrome_policy":       {Tok: tfbridge.MakeResource(mainPkg, mainMod, "ChromePolicy")},
+			"googleworkspace_domain":              {Tok: tfbridge.MakeResource(mainPkg, mainMod, "Domain")},
+			"googleworkspace_domain_alias":        {Tok: tfbridge.MakeResource(mainPkg, mainMod, "DomainAlias")},
+			"googleworkspace_gmail_send_as_alias": {Tok: tfbridge.MakeResource(mainPkg, mainMod, "GmailSendAsAlias")},
+			"googleworkspace_group":               {Tok: tfbridge.MakeResource(mainPkg, mainMod, "Group")},
+			"googleworkspace_group_member":        {Tok: tfbridge.MakeResource(mainPkg, mainMod, "GroupMember")},
+			"googleworkspace_group_members":       {Tok: tfbridge.MakeResource(mainPkg, mainMod, "GroupMembers")},
+			"googleworkspace_group_settings":      {Tok: tfbridge.MakeResource(mainPkg, mainMod, "GroupSettings")},
+			"googleworkspace_org_unit":            {Tok: tfbridge.MakeResource(mainPkg, mainMod, "OrgUnit")},
+			"googleworkspace_role":                {Tok: tfbridge.MakeResource(mainPkg, mainMod, "Role")},
+			"googleworkspace_role_assignment":     {Tok: tfbridge.MakeResource(mainPkg, mainMod, "RoleAssignment")},
+			"googleworkspace_schema":              {Tok: tfbridge.MakeResource(mainPkg, mainMod, "Schema")},
+			"googleworkspace_user":                {Tok: tfbridge.MakeResource(mainPkg, mainMod, "User")},
 		},
 		DataSources: map[string]*tfbridge.DataSourceInfo{
 			// Map each resource in the Terraform provider to a Pulumi function. An example
 			// is below.
 			// "aws_ami": {Tok: tfbridge.MakeDataSource(mainPkg, mainMod, "getAmi")},
+			"googleworkspace_chrome_policy":        {Tok: tfbridge.MakeDataSource(mainPkg, mainMod, "getChromePolicy")},
+			"googleworkspace_chrome_policy_schema": {Tok: tfbridge.MakeDataSource(mainPkg, mainMod, "getChromePolicySchema")},
+			"googleworkspace_domain":               {Tok: tfbridge.MakeDataSource(mainPkg, mainMod, "getDomain")},
+			"googleworkspace_domain_alias":         {Tok: tfbridge.MakeDataSource(mainPkg, mainMod, "getDomainAlias")},
+			"googleworkspace_gmail_send_as_alias":  {Tok: tfbridge.MakeDataSource(mainPkg, mainMod, "getGmailSendAsAlias")},
+			"googleworkspace_group":                {Tok: tfbridge.MakeDataSource(mainPkg, mainMod, "getGroup")},
+			"googleworkspace_groups":               {Tok: tfbridge.MakeDataSource(mainPkg, mainMod, "getGroups")},
+			"googleworkspace_group_member":         {Tok: tfbridge.MakeDataSource(mainPkg, mainMod, "getGroupMember")},
+			"googleworkspace_group_members":        {Tok: tfbridge.MakeDataSource(mainPkg, mainMod, "getGroupMembers")},
+			"googleworkspace_group_settings":       {Tok: tfbridge.MakeDataSource(mainPkg, mainMod, "getGroupSettings")},
+			"googleworkspace_org_unit":             {Tok: tfbridge.MakeDataSource(mainPkg, mainMod, "getOrgUnit")},
+			"googleworkspace_privileges":           {Tok: tfbridge.MakeDataSource(mainPkg, mainMod, "getPrivileges")},
+			"googleworkspace_role":                 {Tok: tfbridge.MakeDataSource(mainPkg, mainMod, "getRole")},
+			"googleworkspace_role_assignment":      {Tok: tfbridge.MakeDataSource(mainPkg, mainMod, "getRoleAssignment")},
+			"googleworkspace_schema":               {Tok: tfbridge.MakeDataSource(mainPkg, mainMod, "getSchema")},
+			"googleworkspace_user":                 {Tok: tfbridge.MakeDataSource(mainPkg, mainMod, "getUser")},
+			"googleworkspace_users":                {Tok: tfbridge.MakeDataSource(mainPkg, mainMod, "getUsers")},
 		},
 		JavaScript: &tfbridge.JavaScriptInfo{
 			// List any npm dependencies and their versions
